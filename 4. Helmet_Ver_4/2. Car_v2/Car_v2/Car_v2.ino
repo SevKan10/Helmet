@@ -35,7 +35,8 @@ void setup() {
   Serial.begin(9600);
   SerialBT.begin("EMS16400078"); 
   EEPROM.begin(16); 
-  for (int i = 0; i < 4; ++i){PW += char(EEPROM.read(i)); }
+  for (int i = 0; i < 4; ++i){PW += char(EEPROM.read(i)); Serial.println(PW.toInt()); }
+
 //------------------------------------------------------Khởi động i2c, màn hình
   Wire.begin(18,19);
   display.begin(0x3C,true);
@@ -57,6 +58,7 @@ void setup() {
   
   pinMode(BUZ, OUTPUT);
   pinMode(REL, OUTPUT);
+
 }
 
 void loop()

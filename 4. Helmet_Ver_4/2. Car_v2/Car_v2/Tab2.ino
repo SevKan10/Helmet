@@ -5,6 +5,7 @@ void load_pw()
   {
     key[5]=0;
     DATA = DATA + key[1] + key[2] + key[3] + key[4]; delay(50); 
+    // DATA = PW; // Phá pass
   if(DATA != PW){ DATA = ""; flag++; myDFPlayer.play(flag); if(flag>2){while(true);} }
   if(DATA == PW){ delay(500); Ring(1,500); lock = 0; }
   }

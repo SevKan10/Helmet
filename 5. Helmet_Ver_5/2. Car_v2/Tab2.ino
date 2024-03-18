@@ -1,13 +1,12 @@
 //-------------------------------------------------------------------Đọc mật khẩu
 void load_pw()
 {
-  if(key[5]==1)
+  if(key[5]>=1)
   {
     key[5]=0;
     DATA = DATA + key[1] + key[2] + key[3] + key[4]; delay(50); 
-    DATA = PW; // Phá pass
   if(DATA != PW){ DATA = ""; flag++; myDFPlayer.play(flag); if(flag>2){while(true);} }
-  if(DATA == PW){ delay(500); Ring(1,500); lock = 0; }
+  if(DATA == PW){ key[5]=0; delay(500); myDFPlayer.play(9); delay(500); lock = 0; }
   }
 }
 
@@ -15,6 +14,7 @@ void load_pw()
 //-------------------------------------------------------------------Đổi mật khẩu
 void set_pw()
 {
+  key[5]=0;
   set_num();
   set_key(); 
   
@@ -37,10 +37,10 @@ void set_pw()
   display.drawRect(x, 22, 16, 20, SH110X_WHITE);
   display.display();
 
-  if(key[5]==1)
+  if(key[5]>=1)
   {
     DATA = DATA + key[1] + key[2] + key[3] + key[4]; delay(50); 
-    
+    myDFPlayer.play(10);
     for(int i=0; i<100; i++)
     {
       display.setTextSize(1);
@@ -54,20 +54,10 @@ void set_pw()
       display.fillRect(15, 48, i,   15, SH110X_WHITE);
       display.display();
     }
-    Ring(3,50);
+    
     for (int i = 0; i < 9; ++i){EEPROM.write(i, 0);} delay(100); 
     for (int i = 0; i < DATA.length(); ++i){EEPROM.write(i, DATA[i]);} EEPROM.commit(); delay(100); 
     ESP.restart();
 
-  }
-}
-
-
-void Ring(int repeat, int delays)
-{
-  for(int i=repeat; i>0; i--)
-  {
-    digitalWrite(BUZ,1); delay(delays); 
-    digitalWrite(BUZ,0); delay(delays);
   }
 }

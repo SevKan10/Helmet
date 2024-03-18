@@ -1,3 +1,5 @@
+
+
 //------------------------------------------------------Bluetooth
 #include "BluetoothSerial.h"
 BluetoothSerial SerialBT;
@@ -7,18 +9,15 @@ BluetoothSerial SerialBT;
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 Adafruit_SH1106G display(128, 64, &Wire, -1);
-//------------------------------------------------------Gia tốc
-#include <MPU6050_tockn.h>
-MPU6050 mpu6050(Wire);
 //------------------------------------------------------Giọng nói
 #include <DFRobotDFPlayerMini.h>  
 DFRobotDFPlayerMini myDFPlayer;
 //------------------------------------------------------Ngoại vi
-#define SW1 32
-#define SW2 33
-#define SW3 26
-#define SW4 25
-#define BUZ 23
+#define SW1 25
+#define SW2 26
+#define SW3 33
+#define SW4 32
+
 #define REL 27
 //------------------------------------------------------Biến toàn cục
 int key[6] = {0,0,0,0,0,0};  //Mảng chứa dữ liệu nhập
@@ -35,8 +34,8 @@ void setup() {
   Serial.begin(9600);
   SerialBT.begin("EMS16400078"); 
   EEPROM.begin(16); 
-  for (int i = 0; i < 4; ++i){PW += char(EEPROM.read(i)); Serial.println(PW.toInt()); }
-
+  for (int i = 0; i < 4; ++i){ PW += char(EEPROM.read(i));}
+  Serial.println(PW);
 //------------------------------------------------------Khởi động i2c, màn hình
   Wire.begin(18,19);
   display.begin(0x3C,true);
@@ -44,9 +43,8 @@ void setup() {
   display.setTextColor(SH110X_WHITE);
   display.clearDisplay();
 //------------------------------------------------------Khởi động cảm biến gia tốc
-  display.clearDisplay(); display.setCursor(10,25); display.print("Start Acceleration"); display.display();
-  mpu6050.begin();
-  mpu6050.calcGyroOffsets(true);
+  display.clearDisplay(); display.setCursor(10,25); display.print("Start connection"); display.display();
+  delay(5000); 
 //------------------------------------------------------Khởi động giọng nói
   Serial2.begin(9600);
   myDFPlayer.begin(Serial2, true, false);
@@ -56,9 +54,7 @@ void setup() {
   pinMode(SW3, INPUT);
   pinMode(SW4, INPUT);
   
-  pinMode(BUZ, OUTPUT);
   pinMode(REL, OUTPUT);
-
 }
 
 void loop()
@@ -127,7 +123,7 @@ void loop()
     
     if( num2==1 and (digitalRead(SW1)==1 or digitalRead(SW2)==1) )
     { 
-      flag1=1; DATA="";
+      key[5]=0; flag1=1; DATA="";
       while(flag1==1) { set_pw(); }
     }
   }
@@ -137,7 +133,6 @@ void loop()
   if(millis() - ping < 3000){ myDFPlayer.play(4); }
   while(millis() - ping < 3000)
   {
-    mpu6050.update();
     display.clearDisplay(); 
     display.setCursor(10,0); 
     display.print("Connected"); 
@@ -154,4 +149,5 @@ void loop()
            
     }
   }
+  
 }
